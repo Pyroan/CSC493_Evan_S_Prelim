@@ -8,8 +8,8 @@ import com.schoenberger.gdx.game.CanyonBunnyMain;
 
 
 public class DesktopLauncher {
-	private static boolean rebuildAtlas = true;
-	private static boolean drawDebugOutline = true;
+	private static boolean rebuildAtlas = false; // Since I dun goofed the file finding somehow, just gonna leave as is thanks.
+	private static boolean drawDebugOutline = false; // Shows the pink debugging outlines when true
 
 	public static void main (String[] arg) {
 		if (rebuildAtlas) {
@@ -18,8 +18,8 @@ public class DesktopLauncher {
 			settings.maxHeight = 1024;
 			settings.duplicatePadding = false;
 			settings.debug = drawDebugOutline;
-			TexturePacker.process(settings, "assets-raw/images",
-					"../schoenberger-gdx-game-core/assets/images", "canyonbunny.pack");
+			TexturePacker.process(settings, "assets_raw/images", 
+					"../core/assets/images", "canyonbunny.pack");
 		}
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
