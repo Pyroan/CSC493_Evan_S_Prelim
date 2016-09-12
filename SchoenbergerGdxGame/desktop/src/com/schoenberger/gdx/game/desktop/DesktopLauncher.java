@@ -18,7 +18,7 @@ public class DesktopLauncher {
 			settings.maxHeight = 1024;
 			settings.duplicatePadding = false;
 			settings.debug = drawDebugOutline;
-			TexturePacker.process(settings, "assets_raw/images", 
+			TexturePacker.process(settings, "assets_raw/images",
 					"../core/assets/images", "canyonbunny.pack");
 		}
 

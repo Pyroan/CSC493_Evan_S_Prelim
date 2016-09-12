@@ -33,9 +33,11 @@ public class Assets implements Disposable, AssetErrorListener{
 		this.assetManager = assetManager;
 		// set asset manager error handler
 		assetManager.setErrorListener(this);
+
 		// load texture atlas
 		assetManager.load(Constants.TEXTURE_ATLAS_OBJECTS,
 				TextureAtlas.class);
+
 		// start loading assets and wait until finished
 		assetManager.finishLoading();
 		Gdx.app.debug(TAG,  "# of assets loaded: "
@@ -65,15 +67,9 @@ public class Assets implements Disposable, AssetErrorListener{
 		assetManager.dispose();
 	}
 
-//	@Override
-	public void error (String filename, Class type, Throwable throwable) {
-		Gdx.app.error(TAG, "Couldn't load asset '"
-				+ filename + "'", (Exception)throwable);
-	}
-
 	@Override
 	public void error(AssetDescriptor asset, Throwable throwable) {
-		Gdx.app.error(TAG, "Wouldn't load sseet '"
+		Gdx.app.error(TAG, "Wouldn't load asset '"
 				+ asset.fileName + "'", (Exception) throwable);
 	}
 

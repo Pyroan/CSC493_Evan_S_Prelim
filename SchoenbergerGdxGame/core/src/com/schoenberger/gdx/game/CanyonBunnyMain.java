@@ -25,11 +25,14 @@ public class CanyonBunnyMain implements ApplicationListener {
 	public void create() {
 		// Set Libgdx log level to DEBUG
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		
 		// Load Assets
 		Assets.instance.init(new AssetManager());
+		
 		// Initialize controller and renderer
 		worldController = new WorldController();
 		worldRenderer = new WorldRenderer(worldController);
+		
 		// Game world is active on start
 		paused = false;
 	}
