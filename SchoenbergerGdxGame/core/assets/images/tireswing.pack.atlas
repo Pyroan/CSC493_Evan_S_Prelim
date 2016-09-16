@@ -1,0 +1,41 @@
+
+tireswing.pack.png
+size: 1024,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Box
+  rotate: false
+  xy: 504, 486
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Fire
+  rotate: false
+  xy: 504, 468
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Pile o garbage
+  rotate: false
+  xy: 2, 2
+  size: 500, 500
+  orig: 500, 500
+  offset: 0, 0
+  index: -1
+Player
+  rotate: false
+  xy: 522, 486
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Speedboost
+  rotate: false
+  xy: 504, 450
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1

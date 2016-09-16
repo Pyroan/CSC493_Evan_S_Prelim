@@ -45,9 +45,9 @@ public class WorldController extends InputAdapter{
 		
 		// Create a list of Texture Regions
 		Array<TextureRegion> regions = new Array<TextureRegion>();
-		regions.add(Assets.instance.bunny.head);
-		regions.add(Assets.instance.feather.feather);
-		regions.add(Assets.instance.goldCoin.goldCoin);
+		regions.add(Assets.instance.player.tire);
+		regions.add(Assets.instance.speedBoost.booster);
+		regions.add(Assets.instance.fire.flame);
 		
 		// Create new sprites using the just created texture
 		for (int i = 0; i < testSprites.length; i++) {
