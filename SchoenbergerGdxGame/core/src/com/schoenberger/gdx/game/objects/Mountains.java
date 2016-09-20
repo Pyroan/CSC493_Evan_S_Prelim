@@ -67,7 +67,7 @@ public class Mountains extends AbstractGameObject {
 		// distant mountains (dark grey)
 		drawMountain(batch, 0.5f, 0.5f, 0.5f);
 		// distant mountains (grey)
-		drawMountain(batch, 0.25f, 0.25f, 0.7f);
+		drawMountain(batch, 0.25f, 0.25f, .7f);
 		//distant mountanis (light grey)
 		drawMountain(batch, 0.0f, 0.0f, 0.9f);
 	}
