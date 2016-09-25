@@ -45,7 +45,7 @@ public class Clouds extends AbstractGameObject {
 		regClouds.add(Assets.instance.levelDecoration.cloud01);
 		regClouds.add(Assets.instance.levelDecoration.cloud02);
 		regClouds.add(Assets.instance.levelDecoration.cloud03);
-
+		clouds = new Array<Cloud>();
 		int distFac = 5;
 		int numClouds = (int)(length / distFac);
 		for (int i = 0; i < numClouds; i++) {

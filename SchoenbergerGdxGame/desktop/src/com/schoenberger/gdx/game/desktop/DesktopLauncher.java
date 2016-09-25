@@ -8,7 +8,7 @@ import com.schoenberger.gdx.game.CanyonBunnyMain;
 
 
 public class DesktopLauncher {
-	private static boolean rebuildAtlas = false; // Since I dun goofed the file finding somehow, just gonna leave as is thanks.
+	private static boolean rebuildAtlas = false;
 	private static boolean drawDebugOutline = false; // Shows the pink debugging outlines when true
 
 	public static void main (String[] arg) {
