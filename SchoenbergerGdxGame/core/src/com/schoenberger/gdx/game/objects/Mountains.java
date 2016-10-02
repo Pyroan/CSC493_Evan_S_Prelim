@@ -57,9 +57,9 @@ public class Mountains extends AbstractGameObject {
 					scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(),
 					reg.getRegionWidth(), reg.getRegionHeight(), false, false);
 			xRel += dimension.x;
-			// Reset color to white
-			batch.setColor(1,1,1,1);
 		}
+		// Reset color to white
+		batch.setColor(1,1,1,1);
 	}
 
 	@Override
