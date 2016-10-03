@@ -7,6 +7,9 @@ import com.badlogic.gdx.utils.Array;
 import com.schoenberger.gdx.game.objects.AbstractGameObject;
 import com.schoenberger.gdx.game.objects.Box;
 import com.schoenberger.gdx.game.objects.JunkPiles;
+import com.schoenberger.gdx.game.objects.Tire;
+import com.schoenberger.gdx.game.objects.SpeedBoost;
+import com.schoenberger.gdx.game.objects.Fire;
 
 public class Level {
 	public static final String TAG = Level.class.getName();
@@ -33,6 +36,10 @@ public class Level {
 		}
 	}
 	
+	public Tire player;
+	public Array<Fire> flames;
+	public Array<SpeedBoost> speedBoosts;
+	
 	// objects
 	public Array<Box> boxes;
 	
@@ -44,8 +51,13 @@ public class Level {
 	}
 	
 	private void init (String filename) {
+		// player character
+		player = null;
+		
 		// objects
 		boxes = new Array<Box>();
+		flames = new Array<Fire>();
+		speedBoosts = new Array<SpeedBoost>();
 		
 		// load image file that represents the level data
 		Pixmap pixmap = new Pixmap(Gdx.files.internal (filename));
@@ -71,7 +83,7 @@ public class Level {
 				else if (BLOCK_TYPE.BOX.sameColor(currentPixel)) {
 					obj = new Box();
 					float heightIncreaseFactor = 1.0f;
-					offsetHeight = -2.5f;
+					offsetHeight = -5f;
 					obj.position.set(pixelX, baseHeight * obj.dimension.y 
 							* heightIncreaseFactor + offsetHeight);
 					boxes.add((Box) obj);
@@ -79,15 +91,24 @@ public class Level {
 				// player spawn point
 				else if 
 					(BLOCK_TYPE.PLAYER_SPAWNPOINT.sameColor(currentPixel)) {
-					
+					obj = new Tire();
+					offsetHeight = -3.0f;
+					obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
+					player = (Tire) obj;
 				}
 				// speedboost
 				else if (BLOCK_TYPE.SPEEDBOOST.sameColor(currentPixel)) {
-					
+					obj = new SpeedBoost();
+					offsetHeight = -1.5f;
+					obj.position.set(pixelX, baseHeight *obj.dimension.y + offsetHeight);
+					speedBoosts.add((SpeedBoost) obj);
 				}
-				// gold coin
+				// fire
 				else if (BLOCK_TYPE.ITEM_GOLD_COIN.sameColor(currentPixel)) {
-					
+					obj = new Fire();
+					offsetHeight = -1.5f;
+					obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
+					flames.add((Fire) obj);
 				}
 				// unknown object/pixel color
 				else {
@@ -119,5 +140,26 @@ public class Level {
 		for (Box box : boxes) {
 			box.render(batch);
 		}
+		
+		// Draw Flames
+		for (Fire flame: flames)
+			flame.render(batch);
+		
+		// Draw Speed Boosts
+		for (SpeedBoost boost: speedBoosts)
+			boost.render(batch);
+		
+		// Draw player character
+		player.render(batch);
+	}
+	
+	public void update(float deltaTime) {
+		player.update(deltaTime);
+		for (Box box: boxes)
+			box.update(deltaTime);
+		for (Fire flame: flames)
+			flame.update(deltaTime);
+		for (SpeedBoost boost: speedBoosts)
+			boost.update(deltaTime);
 	}
 }

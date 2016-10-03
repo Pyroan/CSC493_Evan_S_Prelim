@@ -3,6 +3,7 @@ package com.schoenberger.gdx.game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.schoenberger.gdx.util.Constants;
 import com.badlogic.gdx.Gdx;
@@ -78,11 +79,49 @@ public class WorldRenderer implements Disposable {
 	private void renderGui(SpriteBatch batch){
 		batch.setProjectionMatrix(cameraGUI.combined);
 		batch.begin();
+		// Draw currently boosted icon (anchored to top left edge)
+		renderGuiSpeedBoost(batch);
 		// draw extra lives icon +text (anchored to top right edge)
 		renderGuiExtraLive(batch);
 		// draw FPS text (anchored to bottom right edge)
 		renderGuiFpsCounter(batch);
+		// draw game over text
+		renderGuiGameOverMessage(batch);
 		batch.end();
+	}
+	
+	private void renderGuiGameOverMessage (SpriteBatch batch) {
+		float x = cameraGUI.viewportWidth /2;
+		float y = cameraGUI.viewportHeight / 2;
+		if (worldController.isGameOver()) {
+			BitmapFont fontGameOver = Assets.instance.fonts.defaultBig;
+			fontGameOver.setColor(1, 0.75f, 0.25f, 1);
+			fontGameOver.draw(batch, "GAME OVER", x, y, 0,
+					Align.center, false);
+			fontGameOver.setColor(1,1,1,1);
+		}
+	}
+	
+	public void renderGuiSpeedBoost(SpriteBatch batch) {
+		float x = -15;
+		float y = 30;
+		float timeLeftSpeedBoost =
+				worldController.level.player.timeLeftSpeedBoost;
+		if (timeLeftSpeedBoost > 0) {
+			// Start icon fade in/out if the left power-up time 
+			// is less than four seconds. the fade interval is set
+			// to five changes per second.
+			if (timeLeftSpeedBoost < 4) {
+				if (((int)(timeLeftSpeedBoost * 5)%2)!=0) {
+					batch.setColor(1,1,1, 0.5f);
+				}
+			}
+			batch.draw(Assets.instance.speedBoost.booster,
+					x, y, 50, 50, 100, 100, 0.35f, -0.35f, 0);
+			batch.setColor(1,1,1,1);
+			Assets.instance.fonts.defaultSmall.draw(batch,
+					"" + (int)timeLeftSpeedBoost, x + 60, y + 57);
+		}
 	}
 	
 	public void resize (int width, int height) {

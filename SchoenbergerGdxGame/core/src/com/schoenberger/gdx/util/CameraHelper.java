@@ -17,7 +17,7 @@ public class CameraHelper {
 	
 	public CameraHelper () {
 		position = new Vector2();
-		zoom = 1.0f;
+		zoom = 2f;
 	}
 	
 	public void update (float deltaTime) {
@@ -25,6 +25,9 @@ public class CameraHelper {
 		
 		position.x = target.position.x + target.origin.x;
 		position.y = target.position.y + target.origin.y;
+		
+		// Prevent camera from moving down too far
+		position.y = Math.max(-1f, position.y);
 	}
 	
 	public void setPosition(float x, float y) {
