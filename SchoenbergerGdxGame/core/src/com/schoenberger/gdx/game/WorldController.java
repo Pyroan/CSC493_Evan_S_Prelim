@@ -20,6 +20,8 @@ import com.schoenberger.gdx.game.objects.BunnyHead.JUMP_STATE;
 import com.schoenberger.gdx.game.objects.Feather;
 import com.schoenberger.gdx.game.objects.GoldCoin;
 import com.schoenberger.gdx.game.objects.Rock;
+import com.badlogic.gdx.Game;
+import com.schoenberger.gdx.game.screens.MenuScreen;
 
 public class WorldController extends InputAdapter{
 	// Tags are required for all debug messages
@@ -28,11 +30,18 @@ public class WorldController extends InputAdapter{
 	public Level level;
 	public int lives;
 	public int score;
-	
+
 	// Rectangles for collision detection
 	private Rectangle r1 = new Rectangle ();
 	private Rectangle r2 = new Rectangle ();
-	
+
+	private Game game;
+
+	private void backToMenu () {
+		// switch to menu screen
+		game.setScreen(new MenuScreen(game));
+	}
+
 	private void onCollisionBunnyHeadWithRock (Rock rock) {
 		BunnyHead bunnyHead = level.bunnyHead;
 		float heightDifference = Math.abs(bunnyHead.position.y
@@ -48,7 +57,7 @@ public class WorldController extends InputAdapter{
 			}
 			return;
 		}
-		
+
 		switch (bunnyHead.jumpState) {
 		case GROUNDED:
 			break;
@@ -64,24 +73,24 @@ public class WorldController extends InputAdapter{
 			break;
 		}
 	}
-	
+
 	private void onCollisionBunnyWithGoldCoin (GoldCoin goldcoin) {
 		goldcoin.collected = true;
 		score += goldcoin.getScore();
 		Gdx.app.log(TAG,  "Gold coin collected");
 	}
-	
+
 	private void onCollisionBunnyWithFeather( Feather feather) {
 		feather.collected = true;
 		score += feather.getScore();
 		level.bunnyHead.setFeatherPowerup(true);
 		Gdx.app.log(TAG, "Feather collected");
 	}
-	
+
 	private void testCollisions () {
 		r1.set(level.bunnyHead.position.x, level.bunnyHead.position.y,
 				level.bunnyHead.bounds.width, level.bunnyHead.bounds.height);
-		
+
 		// Test Collision: Bunny Head <-> Rocks
 		for (Rock rock : level.rocks) {
 			r2.set(rock.position.x, rock.position.y, rock.bounds.width,
@@ -91,7 +100,7 @@ public class WorldController extends InputAdapter{
 			// IMPORTANT: must do all collision for valid
 			// edge testing on rocks
 		}
-		
+
 		// Test collision: Bunny head <->  Gold Coins
 		for (GoldCoin goldCoin : level.goldCoins) {
 			if (goldCoin.collected) continue;
@@ -101,7 +110,7 @@ public class WorldController extends InputAdapter{
 			onCollisionBunnyWithGoldCoin(goldCoin);
 			break;
 		}
-		
+
 		// Test collision: Bunny Head <-> Feathers
 		for (Feather feather : level.feathers) {
 			if (feather.collected) continue;
@@ -116,6 +125,11 @@ public class WorldController extends InputAdapter{
 	public CameraHelper cameraHelper;
 
 	public WorldController() {
+		init();
+	}
+
+	public WorldController(Game game) {
+		this.game = game;
 		init();
 	}
 
@@ -158,7 +172,7 @@ public class WorldController extends InputAdapter{
 		handleDebugInput(deltaTime);
 		if (isGameOver()) {
 			timeLeftGameOverDelay -= deltaTime;
-			if (timeLeftGameOverDelay < 0) init();
+			if (timeLeftGameOverDelay < 0) backToMenu();
 		} else {
 		handleInputGame(deltaTime);
 		}
@@ -205,12 +219,12 @@ public class WorldController extends InputAdapter{
 		y += cameraHelper.getPosition().y;
 		cameraHelper.setPosition(x, y);
 	}
-	
+
 	private void handleInputGame(float dletaTime) {
 		if (cameraHelper.hasTarget(level.bunnyHead)) {
 			// Player Movement
 			if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-				level.bunnyHead.velocity.x = 
+				level.bunnyHead.velocity.x =
 						-level.bunnyHead.terminalVelocity.x;
 			} else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
 				level.bunnyHead.velocity.x =
@@ -218,7 +232,7 @@ public class WorldController extends InputAdapter{
 			} else {
 				// Execute auto-forward movement on non-desktop platofmr
 				if (Gdx.app.getType() != ApplicationType.Desktop) {
-					level.bunnyHead.velocity.x = 
+					level.bunnyHead.velocity.x =
 							level.bunnyHead.terminalVelocity.x;
 				}
 			}
@@ -243,18 +257,22 @@ public class WorldController extends InputAdapter{
 		else if (keycode == Keys.ENTER) {
 			cameraHelper.setTarget(cameraHelper.hasTarget()
 					? null: level.bunnyHead);
-			Gdx.app.debug(TAG,  "Camera follow enabled: " 
+			Gdx.app.debug(TAG,  "Camera follow enabled: "
 					+ cameraHelper.hasTarget());
+		}
+		// Back to menu
+		else if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
+			backToMenu();
 		}
 		return false;
 	}
-	
+
 	private float timeLeftGameOverDelay;
-	
+
 	public boolean isGameOver() {
 		return lives < 0;
 	}
-	
+
 	public boolean isPlayerInWater() {
 		return level.bunnyHead.position.y < -5;
 	}
