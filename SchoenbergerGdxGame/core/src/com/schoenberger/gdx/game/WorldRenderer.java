@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.schoenberger.gdx.util.Constants;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.schoenberger.gdx.util.GamePreferences;
 
 public class WorldRenderer implements Disposable {
 	private OrthographicCamera camera;
@@ -99,6 +100,7 @@ public class WorldRenderer implements Disposable {
 		// draw extra lives icon +_text (anchored to top right edge)
 		renderGuiExtraLive(batch);
 		// draw FPS text (anchored to bottom right edge)
+		if (GamePreferences.instance.showFpsCounter)
 		renderGuiFpsCounter(batch);
 		// draw game over text
 		renderGuiGameOverMessage(batch);
