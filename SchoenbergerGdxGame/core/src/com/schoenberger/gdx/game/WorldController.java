@@ -20,21 +20,30 @@ import com.schoenberger.gdx.game.objects.Tire.JUMP_STATE;
 import com.schoenberger.gdx.game.objects.SpeedBoost;
 import com.schoenberger.gdx.game.objects.Fire;
 import com.schoenberger.gdx.game.objects.Box;
+import com.badlogic.gdx.Game;
+import com.schoenberger.gdx.game.screens.MenuScreen;
 
 public class WorldController extends InputAdapter{
 	// Tags are required for all debug messages
 	private static final String TAG = WorldController.class.getName();
-	
+
 	public CameraHelper cameraHelper;
-	
+
 	public Level level;
 	public int lives;
 	public int score;
-	
+
+	private Game game;
+
+	private void backToMenu () {
+		// switch to menu screen
+		game.setScreen(new MenuScreen(game));
+	}
+
 	// Rectangles for collision detection
 	private Rectangle r1 = new Rectangle();
 	private Rectangle r2 = new Rectangle();
-	
+
 	private void onCollisionPlayerWithBox (Box box) {
 		Tire player = level.player;
 		float heightDifference = Math.abs(player.position.y 
@@ -50,7 +59,7 @@ public class WorldController extends InputAdapter{
 			}
 			return;
 		}
-		
+
 		switch (player.jumpState) {
 		case GROUNDED:
 			break;
@@ -66,24 +75,24 @@ public class WorldController extends InputAdapter{
 			break;
 		}
 	}
-	
+
 	private void onCollisionPlayerWithFire (Fire myMixtape /*It's lit*/) {
 		myMixtape.collected = true;
 		// score += myMixtape.getScore() maybe not update score for getting hit.
 		Gdx.app.log(TAG, "Fire hit");
 	}
-	
+
 	private void onCollisionPlayerWithBoost (SpeedBoost speedBoost) {
 		speedBoost.collected = true;
 		score += speedBoost.getScore();
 		level.player.setSpeedBoost(true);
 		Gdx.app.log(TAG, "Speed Boosted");
 	}
-	
+
 	private void testCollisions () {
 		r1.set(level.player.position.x, level.player.position.y,
 				level.player.bounds.width, level.player.bounds.height);
-		
+
 		// Test Collision: Player <-> Boxes
 		for (Box box : level.boxes) {
 			r2.set(box.position.x, box.position.y, box.bounds.width,
@@ -93,7 +102,7 @@ public class WorldController extends InputAdapter{
 			// IMPORTANT: must do all collision for valid
 			// edge testing on boxes
 		}
-		
+
 		// Test Collision: Player <-> Fire
 		for (Fire flame: level.flames) {
 			if (flame.collected) continue;
@@ -102,7 +111,7 @@ public class WorldController extends InputAdapter{
 			if (!r1.overlaps(r2)) continue;
 			onCollisionPlayerWithFire(flame);
 		}
-		
+
 		// Test collision: Player <-> speedBoosts
 		for (SpeedBoost boost: level.speedBoosts) {
 			if (boost.collected) continue;
@@ -113,11 +122,17 @@ public class WorldController extends InputAdapter{
 			break;
 		}
 	}
-	
+
 	public WorldController() {
 		init();
 	}
-	
+
+	public WorldController(Game game) {
+		this.game = game;
+		init();
+	}
+
+
 	private void init() {
 		Gdx.input.setInputProcessor(this);
 		cameraHelper = new CameraHelper();
@@ -125,13 +140,13 @@ public class WorldController extends InputAdapter{
 		timeLeftGameOverDelay = 0;
 		initLevel();
 	}
-	
+
 	private void initLevel() {
 		score = 0;
 		level = new Level(Constants.LEVEL_01);
 		cameraHelper.setTarget(level.player);
 	}
-	
+
 	/**
 	 * Draws a fancy test asset (a cyan box filled with red and with a yellow x)
 	 * @param width
@@ -152,12 +167,12 @@ public class WorldController extends InputAdapter{
 		pixmap.drawRectangle(0,  0, width, height);
 		return pixmap;
 	}
-	
+
 	public void update(float deltaTime) {
 		handleDebugInput(deltaTime);
 		if (isGameOver()) {
 			timeLeftGameOverDelay -= deltaTime;
-			if (timeLeftGameOverDelay <0) init();
+			if (timeLeftGameOverDelay < 0) backToMenu();
 		} else {
 			handleInputGame(deltaTime);
 		}
@@ -172,10 +187,10 @@ public class WorldController extends InputAdapter{
 				initLevel();
 		}
 	}
-	
+
 	private void handleDebugInput (float deltaTime) {
 		if (Gdx.app.getType() != ApplicationType.Desktop) return;
-		
+
 		if (!cameraHelper.hasTarget(level.player)){
 			// Camera Controls (move)
 			float camMoveSpeed = 5 * deltaTime;
@@ -197,7 +212,7 @@ public class WorldController extends InputAdapter{
 		if (Gdx.input.isKeyPressed(Keys.PERIOD)) cameraHelper.addZoom(-camZoomSpeed);
 		if (Gdx.input.isKeyPressed(Keys.SLASH)) cameraHelper.setZoom(1);
 	}
-	
+
 	private void handleInputGame(float deltaTime) {
 		if(cameraHelper.hasTarget(level.player)) {
 			// player movement
@@ -213,7 +228,7 @@ public class WorldController extends InputAdapter{
 							level.player.terminalVelocity.x;
 				}
 			}
-			
+
 			// Bunny Jump
 			if (Gdx.input.isTouched() || Gdx.input.isKeyPressed(Keys.SPACE)) {
 				level.player.setJumping(true);
@@ -222,13 +237,13 @@ public class WorldController extends InputAdapter{
 			}
 		}
 	}
-	
+
 	private void moveCamera (float x, float y) {
 		x += cameraHelper.getPosition().x;
 		y += cameraHelper.getPosition().y;
 		cameraHelper.setPosition(x, y);
 	}
-	
+
 	@Override
 	public boolean keyUp (int keycode) {
 		//Reset game world
@@ -241,15 +256,19 @@ public class WorldController extends InputAdapter{
 			cameraHelper.setTarget(cameraHelper.hasTarget() ? null : level.player);
 			Gdx.app.debug(TAG, "Camera follow enabled: " + cameraHelper.hasTarget());
 		}
+		// Back to menu
+		 		else if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
+					backToMenu();
+		 		}
 		return false;
 	}
-	
+
 	private float timeLeftGameOverDelay;
-	
+
 	public boolean isGameOver() {
 		return lives < 0;
 	}
-	
+
 	public boolean isPlayerInWater() {
 		return level.player.position.y < -5;
 	}
