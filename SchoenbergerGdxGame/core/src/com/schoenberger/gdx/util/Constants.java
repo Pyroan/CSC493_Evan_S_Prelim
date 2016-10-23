@@ -39,6 +39,6 @@ public class Constants {
 	public static final String SKIN_CANYONBUNNY_UI =
 			"images/canyonbunny-ui.json";
 
-	public static final String PREFERENCES = null; // yeah so the book apparently forgot to explain
+	public static final String PREFERENCES = "theSettings"; // yeah so the book apparently forgot to explain
 	// What to do here because I can't find it anywhere.
 }

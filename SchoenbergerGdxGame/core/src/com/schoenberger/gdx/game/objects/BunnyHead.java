@@ -9,12 +9,17 @@ import com.schoenberger.gdx.util.Constants;
 import com.schoenberger.gdx.util.CharacterSkin;
 import com.schoenberger.gdx.util.GamePreferences;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+
 /**
  * The Player character
  * [Assignment 6]
  */
 public class BunnyHead extends AbstractGameObject {
 	public static final String TAG = BunnyHead.class.getName();
+	
+	public ParticleEffect dustParticles = new ParticleEffect();
 	
 	private final float JUMP_TIME_MAX = 0.3f;
 	private final float JUMP_TIME_MIN = 0.1f;
@@ -58,6 +63,10 @@ public class BunnyHead extends AbstractGameObject {
 		// Power-ups
 		hasFeatherPowerup = false;
 		timeLeftFeatherPowerup = 0;
+		
+		// Particles
+		dustParticles.load(Gdx.files.internal("particles/dust.pfx"), 
+				Gdx.files.internal("particles"));
 	}
 	
 	public void setJumping (boolean jumpKeyPressed) {
@@ -110,6 +119,7 @@ public class BunnyHead extends AbstractGameObject {
 				setFeatherPowerup (false);
 			}
 		}
+		dustParticles.update(deltaTime);
 	}
 	
 	@Override
@@ -117,6 +127,11 @@ public class BunnyHead extends AbstractGameObject {
 		switch (jumpState) {
 		case GROUNDED:
 			jumpState = JUMP_STATE.FALLING;
+			if (velocity.x != 0) {
+				dustParticles.setPosition(position.x + dimension.x/2,
+						position.y);
+				dustParticles.start();
+			}
 			break;
 		case JUMP_RISING: 
 			// Keep track of jump time
@@ -138,14 +153,18 @@ public class BunnyHead extends AbstractGameObject {
 				velocity.y = terminalVelocity.y;
 			}
 		}
-		if (jumpState != JUMP_STATE.GROUNDED)
+		if (jumpState != JUMP_STATE.GROUNDED) {
+			dustParticles.allowCompletion();
 			super.updateMotionY(deltaTime);
+		}
 	}
 	
 	@Override
 	public void render (SpriteBatch batch) {
 		TextureRegion reg = null;
 		
+		// Draw Particles
+		dustParticles.draw(batch);
 		// Apply Skin Color
 		batch.setColor(CharacterSkin.values()[GamePreferences.instance.charSkin].getColor());
 		// Set special color when game object has a feather power-up
