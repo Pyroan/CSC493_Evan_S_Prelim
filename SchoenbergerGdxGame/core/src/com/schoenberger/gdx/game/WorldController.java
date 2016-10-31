@@ -22,6 +22,7 @@ import com.schoenberger.gdx.game.objects.Fire;
 import com.schoenberger.gdx.game.objects.Box;
 import com.badlogic.gdx.Game;
 import com.schoenberger.gdx.game.screens.MenuScreen;
+import com.schoenberger.gdx.util.AudioManager;
 
 public class WorldController extends InputAdapter{
 	// Tags are required for all debug messages
@@ -179,7 +180,9 @@ public class WorldController extends InputAdapter{
 		level.update(deltaTime);
 		testCollisions();
 		cameraHelper.update(deltaTime);
-		if (!isGameOver() && isPlayerInWater()) {
+		if (!isGameOver() && isPlayerInWater()) 
+		{
+			AudioManager.instance.play(Assets.instance.sounds.die);
 			lives--;
 			if (isGameOver())
 				timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;

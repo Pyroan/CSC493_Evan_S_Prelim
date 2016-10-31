@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.schoenberger.gdx.game.Assets;
+import com.schoenberger.gdx.util.AudioManager;
 import com.schoenberger.gdx.util.Constants;
 import com.schoenberger.gdx.util.CharacterSkin;
 import com.schoenberger.gdx.util.GamePreferences;
@@ -63,6 +64,7 @@ public class Tire extends AbstractGameObject {
 		switch (jumpState) {
 		case GROUNDED: // Character is standing on a platform
 			if (jumpKeyPressed) {
+				AudioManager.instance.play(Assets.instance.sounds.jump);
 				// Start counting jump time from the beginning
 				timeJumping = 0;
 				jumpState = JUMP_STATE.JUMP_RISING;

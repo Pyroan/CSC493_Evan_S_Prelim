@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.schoenberger.gdx.game.Assets;
+import com.schoenberger.gdx.util.AudioManager;
 import com.schoenberger.gdx.util.Constants;
 import com.schoenberger.gdx.util.CharacterSkin;
 import com.schoenberger.gdx.util.GamePreferences;
@@ -222,12 +223,14 @@ public class MenuScreen extends AbstractGameScreen{
 	private void onSaveClicked() {
 		saveSettings();
 		onCancelClicked();
+		AudioManager.instance.onSettingsUpdated();
 	}
 	
 	private void onCancelClicked() {
 		btnMenuPlay.setVisible(true);
 		btnMenuOptions.setVisible(true);
 		winOptions.setVisible(false);
+		AudioManager.instance.onSettingsUpdated();
 	}
  
 	// Renders a frame.

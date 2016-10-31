@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+
 import com.schoenberger.gdx.util.Constants;
 
 public class Assets implements Disposable, AssetErrorListener{
@@ -26,6 +29,9 @@ public class Assets implements Disposable, AssetErrorListener{
 	public AssetFire fire;
 	public AssetSpeedBoost speedBoost;
 	public AssetPileOfGarbage pileOfGarbage;
+	
+	public AssetSounds sounds;
+	public AssetMusic music;
 
 	public AssetFonts fonts;
 
@@ -40,6 +46,12 @@ public class Assets implements Disposable, AssetErrorListener{
 		// load texture atlas
 		assetManager.load(Constants.TEXTURE_ATLAS_OBJECTS,
 				TextureAtlas.class);
+		
+		// load sounds.
+		assetManager.load("sounds/tireJump.wav", Sound.class);
+		assetManager.load("sounds/tireDie.wav", Sound.class);
+		// load music
+		assetManager.load("music/larry-awesome.mp3", Music.class);
 
 		// start loading assets and wait until finished
 		assetManager.finishLoading();
@@ -64,6 +76,8 @@ public class Assets implements Disposable, AssetErrorListener{
 		fire = new AssetFire(atlas);
 		speedBoost = new AssetSpeedBoost(atlas);
 		pileOfGarbage = new AssetPileOfGarbage(atlas);
+		sounds = new AssetSounds(assetManager);
+		music = new AssetMusic(assetManager);
 	}
 
 	@Override
@@ -146,6 +160,26 @@ public class Assets implements Disposable, AssetErrorListener{
 
 		public AssetPileOfGarbage (TextureAtlas atlas) {
 			junkPile = atlas.findRegion("Pile o garbage");
+		}
+	}
+	
+	public class AssetSounds
+	{
+		public final Sound jump;
+		public final Sound die;
+		public AssetSounds (AssetManager am) 
+		{
+			jump = am.get("sounds/tireJump.wav", Sound.class);
+			die = am.get("sounds/tireDie.wav", Sound.class);
+		}
+	}
+	
+	public class AssetMusic
+	{
+		public final Music song01;
+		public AssetMusic (AssetManager am)
+		{
+			song01 = am.get("music/larry-awesome.mp3", Music.class);
 		}
 	}
 }
