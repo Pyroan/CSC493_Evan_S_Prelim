@@ -22,6 +22,7 @@ import com.schoenberger.gdx.game.objects.GoldCoin;
 import com.schoenberger.gdx.game.objects.Rock;
 import com.badlogic.gdx.Game;
 import com.schoenberger.gdx.game.screens.MenuScreen;
+import com.schoenberger.gdx.util.AudioManager;
 
 public class WorldController extends InputAdapter{
 	// Tags are required for all debug messages
@@ -79,12 +80,14 @@ public class WorldController extends InputAdapter{
 
 	private void onCollisionBunnyWithGoldCoin (GoldCoin goldcoin) {
 		goldcoin.collected = true;
+		AudioManager.instance.play(Assets.instance.sounds.pickupCoin);
 		score += goldcoin.getScore();
 		Gdx.app.log(TAG,  "Gold coin collected");
 	}
 
 	private void onCollisionBunnyWithFeather( Feather feather) {
 		feather.collected = true;
+		AudioManager.instance.play(Assets.instance.sounds.pickupFeather);
 		score += feather.getScore();
 		level.bunnyHead.setFeatherPowerup(true);
 		Gdx.app.log(TAG, "Feather collected");
@@ -184,7 +187,9 @@ public class WorldController extends InputAdapter{
 		level.update(deltaTime);
 		testCollisions();
 		cameraHelper.update(deltaTime);
-		if (!isGameOver() && isPlayerInWater()) {
+		if (!isGameOver() && isPlayerInWater()) 
+		{
+			AudioManager.instance.play(Assets.instance.sounds.liveLost);
 			lives--;
 			if (isGameOver())
 				timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;

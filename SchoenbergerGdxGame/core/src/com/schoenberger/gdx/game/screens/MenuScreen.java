@@ -25,6 +25,7 @@ import com.schoenberger.gdx.game.Assets;
 import com.schoenberger.gdx.util.Constants;
 import com.schoenberger.gdx.util.CharacterSkin;
 import com.schoenberger.gdx.util.GamePreferences;
+import com.schoenberger.gdx.util.AudioManager;
 
 public class MenuScreen extends AbstractGameScreen{
 	private static final String TAG = MenuScreen.class.getName();
@@ -222,12 +223,14 @@ public class MenuScreen extends AbstractGameScreen{
 	private void onSaveClicked() {
 		saveSettings();
 		onCancelClicked();
+		AudioManager.instance.onSettingsUpdated();
 	}
 	
 	private void onCancelClicked() {
 		btnMenuPlay.setVisible(true);
 		btnMenuOptions.setVisible(true);
 		winOptions.setVisible(false);
+		AudioManager.instance.onSettingsUpdated();
 	}
  
 	// Renders a frame.
